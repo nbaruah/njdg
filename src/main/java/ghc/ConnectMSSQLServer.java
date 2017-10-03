@@ -1,0 +1,29 @@
+package ghc;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class ConnectMSSQLServer {
+	public void dbConnect(String db_connect_string, String db_userid, String db_password) {
+		try {
+			Class.forName("net.sourceforge.jtds.jdbc.Driver");
+			Connection conn = DriverManager.getConnection(db_connect_string, db_userid, db_password);
+			System.out.println("connected");
+			Statement statement = conn.createStatement();
+			String queryString = "select * from sysobjects where type='u'";
+			ResultSet rs = statement.executeQuery(queryString);
+			while (rs.next()) {
+				System.out.println(rs.getString(1));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void main(String[] args) {
+		ConnectMSSQLServer connServer = new ConnectMSSQLServer();
+		connServer.dbConnect("jdbc:jtds:sqlserver://192.168.100.1;", "Admin", "");
+	}
+}
