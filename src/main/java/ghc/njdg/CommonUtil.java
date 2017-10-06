@@ -1,20 +1,20 @@
 package ghc.njdg;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 
 public class CommonUtil {
-	public static PropertiesConfiguration loadAppConfig() throws ConfigurationException {
+	public static PropertiesConfiguration loadAppConfig(File confFile) throws ConfigurationException {
         PropertiesConfiguration propConf = new PropertiesConfiguration();
         propConf.setDelimiterParsingDisabled(true);
-        propConf.load("D:\\migrations\\njdg_webservice\\njdg\\src\\config.properties");
+        propConf.load(confFile);
         return propConf;
 	}
 	
@@ -27,12 +27,19 @@ public class CommonUtil {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		Connection conn = CommonUtil.getconnection(CommonUtil.loadAppConfig());
+		Connection conn = CommonUtil.getconnection(CommonUtil.loadAppConfig(new File("D:\\migrations\\njdg_webservice\\njdg\\src\\config.properties")));
 		Statement statement = conn.createStatement();
 		String queryString = "SELECT [DistrictID],[StateID],[District] FROM [HighNIC].[Admin].[tDistricts]";
 		ResultSet rs = statement.executeQuery(queryString);
 		while (rs.next()) {
 			System.out.println(rs.getString("DistrictID") + "\t" + rs.getString("StateID") + "\t" + rs.getString("District"));
 		}
+	}
+	
+	public static String getServiceBquery(String queryTemplateFilePath) throws ConfigurationException {
+		PropertiesConfiguration queryTemplateConf = new PropertiesConfiguration();
+        queryTemplateConf.setDelimiterParsingDisabled(true);
+        queryTemplateConf.load(queryTemplateFilePath);
+		return queryTemplateConf.getString("service.b");
 	}
 }
