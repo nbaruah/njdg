@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.enums;
 
 public enum PendingForReg {
 	PARENT_TAG("PENDING_FOR_REGISTRATION"),

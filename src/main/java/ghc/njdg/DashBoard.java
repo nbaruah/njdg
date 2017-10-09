@@ -7,6 +7,12 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
+import ghc.njdg.enums.LastMonthFiled;
+import ghc.njdg.enums.ListedToday;
+import ghc.njdg.enums.PendingForReg;
+import ghc.njdg.enums.UnderObjection;
+import ghc.njdg.enums.UnderRejection;
+
 public class DashBoard {
 	private Map<String, Integer> lastMonthFiledCases;
 	private Map<String, Integer> underObjectionCases;

@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.enums;
 
 public enum ListedToday {
 	PARENT_TAG("CASES_LISTED_TODAY"),

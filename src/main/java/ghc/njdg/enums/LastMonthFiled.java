@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.enums;
 
 public enum LastMonthFiled {
 	PARENT_TAG("CASES_FILED_IN_LAST_MONTH"),

@@ -27,6 +27,7 @@ public class WebServiceB {
 	private ResultSet rs;
 	private ArrayList<Case> cases;
 
+	//Initialization
 	// data base connectivity
 	public void init(File confFile) throws ServiceBException {
 		try {
@@ -106,14 +107,5 @@ public class WebServiceB {
 		writer.writeStartElement(tag);
 		writer.writeCharacters(data);
 		writer.writeEndElement();
-	}
-	
-	public static void main(String[] args) throws Exception {
-		File appConfigFile = new File("D:\\migrations\\njdg_webservice\\njdg\\src\\config.properties");
-		WebServiceB serviceB = new WebServiceB();
-		serviceB.init(appConfigFile);
-		serviceB.executeQuery();
-		serviceB.parseResultSet();
-		serviceB.writeXML();
 	}
 }

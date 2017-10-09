@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.enums;
 
 public enum UnderRejection {
 	PARENT_TAG("CASES_UNDER_REJECTION"),

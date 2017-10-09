@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.enums;
 
 public enum TotalJudges {
 	PARENT_TAG("TOTALJUDGES"),

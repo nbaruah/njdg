@@ -3,53 +3,61 @@ package ghc.njdg;
 import java.util.Arrays;
 
 import org.apache.commons.cli.CommandLine;
-import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 public class CliOptionParser {
-	private static final String SERVICE_TYPE = "t";
-	private static final String XML_FILE = "f";
+	private static final String SERVICE_TYPE = "s";
 	private static final String CONF_FILE = "c";
-	
+
 	private static final Options cliOptions;
+	
+	private static final Logger LOG = LogManager.getLogger(CliOptionParser.class);
 
 	static {
 		cliOptions = constructOptions();
 	}
 
-	@SuppressWarnings("deprecation")
 	public static CliOptions parse(String[] args) {
-		if (args.length < 3) {
-			System.exit(-1);
+		final CommandLineParser cmdLineParser = new DefaultParser();
+		CommandLine cmd = null;
+		try {
+			cmd = cmdLineParser.parse(cliOptions, args);
+		} catch (ParseException e) {
+			throw new IllegalArgumentException("Unable to parse arguments. " + Arrays.toString(args), e);
 		}
-		
-        CommandLine cmd = null;
-        try {
-             cmd = new GnuParser().parse(cliOptions, args);
-        } catch (ParseException e) {
-             throw new IllegalArgumentException("Unable to parse arguments. " +
-                       Arrays.toString(args), e);
-        }
-        
-        CliOptions cliOptions = new CliOptions();
-        cliOptions.setServiceType(cmd.getOptionValue(SERVICE_TYPE));
-        cliOptions.setXmlFilePath(XML_FILE);
-        cliOptions.setConfFilepath(CONF_FILE);
-        return cliOptions;
-	}
 
-	private static Options constructOptions() {
-		Options cliOptions = new Options();
-		cliOptions.addOption(SERVICE_TYPE, true, "Type of webservice required");
-		cliOptions.addOption(XML_FILE, true, "Location where XML file needs to be written");
-		cliOptions.addOption(CONF_FILE, true, "Configuration file Path");
+		final CliOptions cliOptions = new CliOptions();
+		cliOptions.setServiceType(cmd.getOptionValue(SERVICE_TYPE));
+		cliOptions.setConfFilepath(cmd.getOptionValue(CONF_FILE));
+		LOG.error("Parsing cli options" + cliOptions.toString());
 		return cliOptions;
 	}
 
-	static class CliOptions {
+	private static Options constructOptions() {
+		final Option confFile = Option.builder(CONF_FILE).required().longOpt("conf").hasArg()
+				.desc("Configuration file for the app.").build();
+		final Option serviceType = Option.builder(SERVICE_TYPE).required().longOpt("service").hasArg()
+				.desc("Type of webservice required").build();
+		final Options options = new Options();
+		options.addOption(confFile);
+		options.addOption(serviceType);
+		return options;
+	}
+
+	public static void printHelp() {
+		new HelpFormatter().printHelp(CliOptionParser.class.getCanonicalName() + " provides the following options -",
+				cliOptions);
+	}
+
+	public static class CliOptions {
 		private String serviceType;
-		private String xmlFilePath;
 		private String confFilepath;
 
 		public String getServiceType() {
@@ -60,20 +68,17 @@ public class CliOptionParser {
 			this.serviceType = serviceType;
 		}
 
-		public String getXmlFilePath() {
-			return xmlFilePath;
-		}
-
-		public void setXmlFilePath(String xmlFilePath) {
-			this.xmlFilePath = xmlFilePath;
-		}
-
 		public String getConfFilepath() {
 			return confFilepath;
 		}
 
 		public void setConfFilepath(String confFilepath) {
 			this.confFilepath = confFilepath;
+		}
+
+		@Override
+		public String toString() {
+			return "CliOptions [serviceType=" + serviceType + ", confFilepath=" + confFilepath + "]";
 		}
 
 	}

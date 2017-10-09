@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.enums;
 
 public enum UnderObjection {
 	PARENT_TAG("CASES_UNDER_OBJECTION"),
