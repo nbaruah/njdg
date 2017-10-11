@@ -1,8 +1,10 @@
 package ghc.njdg;
 
+import org.apache.commons.lang.StringUtils;
+
 public class RegisteredCase {
 	private String caseType;
-	private int caseNumber;
+	private String caseNumber;
 	private int year;
 	private String longCaseNumber;
 	private String regDate;
@@ -15,12 +17,13 @@ public class RegisteredCase {
 		this.caseType = caseType;
 	}
 
-	public int getCaseNumber() {
+	public String getCaseNumber() {
 		return caseNumber;
 	}
 
-	public void setCaseNumber(int caseNumber) {
-		this.caseNumber = caseNumber;
+	public void setCaseNumber(String caseNo) {
+		String case_noWithYear = StringUtils.substringAfterLast(caseNo, " ");
+		this.caseNumber = StringUtils.substringBefore(case_noWithYear, "/");
 	}
 
 	public int getYear() {
@@ -32,11 +35,20 @@ public class RegisteredCase {
 	}
 
 	public String getLongCaseNumber() {
-		return longCaseNumber;
+		return this.longCaseNumber;
 	}
 
 	public void setLongCaseNumber(String longCaseNumber) {
-		this.longCaseNumber = longCaseNumber;
+		if(StringUtils.isBlank(caseNumber)) {
+			this.setCaseNumber(longCaseNumber);
+		}
+		StringBuilder builder = new StringBuilder();
+		builder.append(this.caseType);
+		builder.append('/');
+		builder.append(this.caseNumber);
+		builder.append('/');
+		builder.append(Integer.toString(this.year));
+		this.longCaseNumber = builder.toString();
 	}
 
 	public String getRegDate() {
@@ -46,5 +58,5 @@ public class RegisteredCase {
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
-
+	
 }

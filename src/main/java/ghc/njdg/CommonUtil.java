@@ -8,9 +8,12 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Map;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
+import org.apache.commons.lang.text.StrSubstitutor;
 import org.apache.log4j.BasicConfigurator;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -27,6 +30,21 @@ public class CommonUtil {
         	BasicConfigurator.configure();
         }
     } 
+    
+    /**
+     * This method substitutes a template string variables (${variableName}) with corresponding value in present in Map
+     * 
+     * @param keysMap
+     *             Map of variable and value to be replace in the string
+     * @param templateString
+     *             the template string with the variables.
+     * @return
+     */
+    public static String substituteTemplate(Map<String, String> keysMap, String templateString) {
+         StrSubstitutor substitutor = new StrSubstitutor(keysMap);
+         String resolvedString = substitutor.replace(templateString);
+         return resolvedString;
+    }
 	
 	public static PropertiesConfiguration loadAppConfig(File confFile) throws ConfigurationException {
         PropertiesConfiguration propConf = new PropertiesConfiguration();
@@ -58,5 +76,12 @@ public class CommonUtil {
         queryTemplateConf.setDelimiterParsingDisabled(true);
         queryTemplateConf.load(queryTemplateFilePath);
 		return queryTemplateConf.getString("service.b");
+	}
+	
+	public static PropertiesConfiguration loadQueryTemplate(String queryTemplateFilePath) throws ConfigurationException {
+		PropertiesConfiguration queryTemplateConf = new PropertiesConfiguration();
+        queryTemplateConf.setDelimiterParsingDisabled(true);
+        queryTemplateConf.load(queryTemplateFilePath);
+        return queryTemplateConf;
 	}
 }

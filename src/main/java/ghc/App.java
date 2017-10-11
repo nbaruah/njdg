@@ -3,7 +3,10 @@ package ghc;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+import org.apache.commons.configuration.Configuration;
 import org.apache.logging.log4j.LogManager;
 
 import ghc.njdg.CliOptionParser;
@@ -11,6 +14,9 @@ import ghc.njdg.CliOptionParser.CliOptions;
 import ghc.njdg.enums.ServiceType;
 import ghc.njdg.CommonUtil;
 import ghc.njdg.WebServiceB;
+import ghc.njdg.WebServiceProcess;
+import ghc.njdg.WebServiceQuery;
+import ghc.njdg.WebServiceQueryBuilder;
 
 public class App {
 	private static final Logger LOG = LogManager.getLogger(App.class);
@@ -22,11 +28,15 @@ public class App {
 				CliOptionParser.printHelp();
 				System.exit(-1);
 			}
+			
 			CommonUtil.configureLogging();
 			CliOptions cliOptions = CliOptionParser.parse(args);
-			// ExdrDqBadRecordTableSetup dqBadRecordSetup = new ExdrDqBadRecordTableSetup(dqBadRecordOptions.getEnvironment(), dqBadRecordOptions.getUser());
-			// dqBadRecordSetup.createExdrDqBadRecordTables();
+			File appConfigFile = new File(cliOptions.getConfFilepath());
+			Configuration appConfig = CommonUtil.loadAppConfig(appConfigFile); //catch exception
+			WebServiceQuery queryBuilder = new WebServiceQueryBuilder();
+			queryBuilder.init(appConfig);
 			ServiceType service;
+			
 			try{
 				service = ServiceType.valueOf(cliOptions.getServiceType());
 			} catch (Exception e) {
@@ -39,7 +49,6 @@ public class App {
 				
 			case B:
 				System.out.println("B type of service");
-				File appConfigFile = new File(cliOptions.getConfFilepath());
 				WebServiceB serviceB = new WebServiceB();
 				serviceB.init(appConfigFile);
 				serviceB.executeQuery();
@@ -49,12 +58,15 @@ public class App {
 				
 			case C1:
 				System.out.println("C1 type of service");
+				WebServiceProcess webService;
+				System.out.println(queryBuilder.getServiceC1Query("WP(C)", "2017"));
 				break;
 			
 			case C2:
 				System.out.println("C2 type of service");
 				break;
 			}
+			
 			
 		} catch (Exception e) {
 			LOG.error("", e);
