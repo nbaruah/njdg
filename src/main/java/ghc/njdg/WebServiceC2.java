@@ -22,7 +22,7 @@ import org.apache.logging.log4j.Logger;
 
 import ghc.njdg.exeption.WebServiceProcessException;
 
-public class WebServiceC1 implements WebServiceProcess {
+public class WebServiceC2 implements WebServiceProcess{
 	private Configuration appConf;
 	private Connection conn;
 	private File xmlOutputFile;
@@ -30,24 +30,24 @@ public class WebServiceC1 implements WebServiceProcess {
 	private ResultSet rs;
 	private ArrayList<RegisteredCase> RegisteredCases;
 	
-	private static final Logger logger = LogManager.getLogger(WebServiceC1.class);
+	private static final Logger logger = LogManager.getLogger(WebServiceC2.class);
 
 	@Override
 	public void init(Configuration appConfig) throws WebServiceProcessException {
 		try {
 			this.appConf = appConfig; // ????????
 			this.conn = CommonUtil.getconnection(appConfig);
-			this.xmlOutputFile = new File(getXmlFilePath(appConfig));
+			this.xmlOutputFile = new File(getXmlFilePath(appConfig)); 
 			this.xmlOutputFile.getParentFile().mkdirs();
 		} catch (SQLException e) {
-			throw new WebServiceProcessException("Webservice C1, Error while conecting to Data base", e);
+			throw new WebServiceProcessException("Webservice C2, Error while conecting to Data base", e);
 		}
 	}
 
 	@Override
 	public void executeQuery(String query) throws WebServiceProcessException {
 		if (StringUtils.isBlank(query)) {
-			throw new WebServiceProcessException("Webservice C1, Query String is empty.");
+			throw new WebServiceProcessException("Webservice C2, Query String is empty.");
 		}
 		try {
 			st = conn.createStatement();
@@ -55,7 +55,7 @@ public class WebServiceC1 implements WebServiceProcess {
 			rs = st.executeQuery(query);
 			System.out.println("ResultSet size: " + rs.getFetchSize());
 		} catch (SQLException e) {
-			throw new WebServiceProcessException("Webservice C1, Error while executing query.", e);
+			throw new WebServiceProcessException("Webservice C2, Error while executing query.", e);
 		}
 
 	}
@@ -76,7 +76,7 @@ public class WebServiceC1 implements WebServiceProcess {
 			st.close();
 			conn.close();
 		} catch (SQLException e) {
-			throw new WebServiceProcessException("Webservice C1, Error while Parsing result set", e);
+			throw new WebServiceProcessException("Webservice C2, Error while Parsing result set", e);
 		}
 
 	}
@@ -121,8 +121,8 @@ public class WebServiceC1 implements WebServiceProcess {
 	private String getXmlFilePath(Configuration appConfig) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(appConfig.getString("path.xml.output"));
-		builder.append("\\ServiceC1");
-		builder.append("\\service_C1_");
+		builder.append("\\ServiceC2");
+		builder.append("\\service_C2_");
 		builder.append(new SimpleDateFormat("dd-MM-yyyy").format(new Date()) + ".xml");
 		return builder.toString();
 	}

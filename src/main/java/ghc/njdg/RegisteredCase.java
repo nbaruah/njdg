@@ -39,7 +39,7 @@ public class RegisteredCase {
 	}
 
 	public void setLongCaseNumber(String longCaseNumber) {
-		if(StringUtils.isBlank(caseNumber)) {
+		if (StringUtils.isBlank(caseNumber)) {
 			this.setCaseNumber(longCaseNumber);
 		}
 		StringBuilder builder = new StringBuilder();
@@ -58,5 +58,22 @@ public class RegisteredCase {
 	public void setRegDate(String regDate) {
 		this.regDate = regDate;
 	}
-	
+
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append("RegisteredCase [caseType=");
+		builder.append(caseType);
+		builder.append(", caseNumber=");
+		builder.append(caseNumber);
+		builder.append(", year=");
+		builder.append(year);
+		builder.append(", longCaseNumber=");
+		builder.append(longCaseNumber);
+		builder.append(", regDate=");
+		builder.append(regDate);
+		builder.append("]");
+		return builder.toString();
+	}
+
 }

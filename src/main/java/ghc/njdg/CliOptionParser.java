@@ -13,11 +13,13 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 public class CliOptionParser {
+	private static final String CASE_YEAR = "y";
+	private static final String CASE_TYPE = "t";
 	private static final String SERVICE_TYPE = "s";
 	private static final String CONF_FILE = "c";
 
 	private static final Options cliOptions;
-	
+
 	private static final Logger LOG = LogManager.getLogger(CliOptionParser.class);
 
 	static {
@@ -36,6 +38,8 @@ public class CliOptionParser {
 		final CliOptions cliOptions = new CliOptions();
 		cliOptions.setServiceType(cmd.getOptionValue(SERVICE_TYPE));
 		cliOptions.setConfFilepath(cmd.getOptionValue(CONF_FILE));
+		cliOptions.setCaseType(cmd.getOptionValue(CASE_TYPE));
+		cliOptions.setCaseYear(cmd.getOptionValue(CASE_YEAR));
 		LOG.error("Parsing cli options" + cliOptions.toString());
 		return cliOptions;
 	}
@@ -45,9 +49,16 @@ public class CliOptionParser {
 				.desc("Configuration file for the app.").build();
 		final Option serviceType = Option.builder(SERVICE_TYPE).required().longOpt("service").hasArg()
 				.desc("Type of webservice required").build();
+		final Option case_type = Option.builder(CASE_TYPE).required(false).longOpt("case_type").hasArg()
+				.desc("Case type parameter.").build();
+		final Option case_year = Option.builder(CASE_YEAR).required(false).longOpt("case_year").hasArg()
+				.desc("Case year parameter.").build();
+
 		final Options options = new Options();
 		options.addOption(confFile);
 		options.addOption(serviceType);
+		options.addOption(case_type);
+		options.addOption(case_year);
 		return options;
 	}
 
@@ -59,6 +70,24 @@ public class CliOptionParser {
 	public static class CliOptions {
 		private String serviceType;
 		private String confFilepath;
+		private String caseType;
+		private String caseYear;
+
+		public String getCaseType() {
+			return caseType;
+		}
+
+		public void setCaseType(String caseType) {
+			this.caseType = caseType;
+		}
+
+		public String getCaseYear() {
+			return caseYear;
+		}
+
+		public void setCaseYear(String caseYear) {
+			this.caseYear = caseYear;
+		}
 
 		public String getServiceType() {
 			return serviceType;
@@ -78,7 +107,8 @@ public class CliOptionParser {
 
 		@Override
 		public String toString() {
-			return "CliOptions [serviceType=" + serviceType + ", confFilepath=" + confFilepath + "]";
+			return "CliOptions [serviceType=" + serviceType + ", confFilepath=" + confFilepath + ", caseType="
+					+ caseType + ", caseYear=" + caseYear + "]";
 		}
 
 	}
