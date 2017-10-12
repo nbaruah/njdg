@@ -3,9 +3,6 @@ package ghc;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
@@ -19,6 +16,7 @@ import ghc.njdg.WebServiceProcess;
 import ghc.njdg.WebServiceQuery;
 import ghc.njdg.WebServiceQueryBuilder;
 import ghc.njdg.WebServiceC1;
+import ghc.njdg.WebServiceC2;
 
 public class App {
 	private static final Logger LOG = LogManager.getLogger(App.class);
@@ -50,12 +48,12 @@ public class App {
 				break;
 				
 			case B:
-				System.out.println("B type of service");
-				WebServiceB serviceB = new WebServiceB();
-				serviceB.init(appConfigFile);
-				serviceB.executeQuery();
-				serviceB.parseResultSet();
-				serviceB.writeXML();
+				String Bquery = queryBuilder.getServiceBQuery();
+				WebServiceProcess webServiceB = new WebServiceB();
+				webServiceB.init(appConfig); 
+				webServiceB.executeQuery(Bquery);
+				webServiceB.parseResultSet();
+				webServiceB.writeXML();
 				break;
 				
 			case C1:
@@ -63,15 +61,23 @@ public class App {
 				String caseYear = cliOptions.getCaseYear();
 				validateServiceCargs(caseType, caseYear);
 				String query = queryBuilder.getServiceC1Query(caseType, caseYear);
-				WebServiceProcess webService = new WebServiceC1();
-				webService.init(appConfig); 
-				webService.executeQuery(query);
-				webService.parseResultSet();
-				webService.writeXML();
+				WebServiceProcess webServiceC1 = new WebServiceC1();
+				webServiceC1.init(appConfig); 
+				webServiceC1.executeQuery(query);
+				webServiceC1.parseResultSet();
+				webServiceC1.writeXML();
 				break;
 			
 			case C2:
-				System.out.println("C2 type of service");
+				String c2CaseType = cliOptions.getCaseType();
+				String c2CaseYear = cliOptions.getCaseYear();
+				validateServiceCargs(c2CaseType, c2CaseYear);
+				String c2Query = queryBuilder.getServiceC2Query(c2CaseType, c2CaseYear);
+				WebServiceProcess webServiceC2 = new WebServiceC2();
+				webServiceC2.init(appConfig); 
+				webServiceC2.executeQuery(c2Query);
+				webServiceC2.parseResultSet();
+				webServiceC2.writeXML();
 				break;
 			}
 			

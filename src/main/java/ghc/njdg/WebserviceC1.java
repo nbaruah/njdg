@@ -23,22 +23,23 @@ import org.apache.logging.log4j.Logger;
 import ghc.njdg.exeption.WebServiceProcessException;
 
 public class WebServiceC1 implements WebServiceProcess {
-	private Configuration appConf;
 	private Connection conn;
 	private File xmlOutputFile;
 	private Statement st;
 	private ResultSet rs;
-	private ArrayList<RegisteredCase> RegisteredCases;
-	
+	private ArrayList<RegisteredCase> registeredCases;
+
 	private static final Logger logger = LogManager.getLogger(WebServiceC1.class);
 
 	@Override
 	public void init(Configuration appConfig) throws WebServiceProcessException {
 		try {
-			this.appConf = appConfig; // ????????
 			this.conn = CommonUtil.getconnection(appConfig);
 			this.xmlOutputFile = new File(getXmlFilePath(appConfig));
-			this.xmlOutputFile.getParentFile().mkdirs();
+			File parentDirectory = this.xmlOutputFile.getParentFile();
+			if (!parentDirectory.exists()) {
+				parentDirectory.mkdirs();
+			}
 		} catch (SQLException e) {
 			throw new WebServiceProcessException("Webservice C1, Error while conecting to Data base", e);
 		}
@@ -62,7 +63,7 @@ public class WebServiceC1 implements WebServiceProcess {
 
 	@Override
 	public void parseResultSet() throws WebServiceProcessException {
-		RegisteredCases = new ArrayList<>();
+		registeredCases = new ArrayList<>();
 		try {
 			while (rs.next()) {
 				RegisteredCase c = new RegisteredCase();
@@ -71,7 +72,7 @@ public class WebServiceC1 implements WebServiceProcess {
 				c.setYear(rs.getInt(3));
 				c.setLongCaseNumber(rs.getString(2));
 				c.setRegDate(rs.getString(4));
-				RegisteredCases.add(c);
+				registeredCases.add(c);
 			}
 			st.close();
 			conn.close();
@@ -88,7 +89,7 @@ public class WebServiceC1 implements WebServiceProcess {
 		try {
 			writer = factory.createXMLStreamWriter(new FileWriter(xmlOutputFile));
 			writer.writeStartDocument();
-			for (RegisteredCase c : RegisteredCases) {
+			for (RegisteredCase c : registeredCases) {
 				writeCase(writer, c);
 			}
 			writer.writeEndDocument();
@@ -98,7 +99,7 @@ public class WebServiceC1 implements WebServiceProcess {
 			throw new WebServiceProcessException("Error while writing XML to file " + xmlOutputFile.getPath(), e);
 		}
 	}
-	
+
 	private void writeCase(XMLStreamWriter writer, RegisteredCase c) throws XMLStreamException {
 		writer.writeCharacters("\n\t");
 		writer.writeStartElement("CASE");
@@ -117,7 +118,7 @@ public class WebServiceC1 implements WebServiceProcess {
 		writer.writeCharacters(data);
 		writer.writeEndElement();
 	}
-	
+
 	private String getXmlFilePath(Configuration appConfig) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(appConfig.getString("path.xml.output"));

@@ -22,23 +22,24 @@ import org.apache.logging.log4j.Logger;
 
 import ghc.njdg.exeption.WebServiceProcessException;
 
-public class WebServiceC2 implements WebServiceProcess{
-	private Configuration appConf;
+public class WebServiceC2 implements WebServiceProcess {
 	private Connection conn;
 	private File xmlOutputFile;
 	private Statement st;
 	private ResultSet rs;
-	private ArrayList<RegisteredCase> RegisteredCases;
-	
+	private ArrayList<FiledCase> filedCases;
+
 	private static final Logger logger = LogManager.getLogger(WebServiceC2.class);
 
 	@Override
 	public void init(Configuration appConfig) throws WebServiceProcessException {
 		try {
-			this.appConf = appConfig; // ????????
 			this.conn = CommonUtil.getconnection(appConfig);
-			this.xmlOutputFile = new File(getXmlFilePath(appConfig)); 
-			this.xmlOutputFile.getParentFile().mkdirs();
+			this.xmlOutputFile = new File(getXmlFilePath(appConfig));
+			File parentDirectory = this.xmlOutputFile.getParentFile();
+			if (!parentDirectory.exists()) {
+				parentDirectory.mkdirs();
+			}
 		} catch (SQLException e) {
 			throw new WebServiceProcessException("Webservice C2, Error while conecting to Data base", e);
 		}
@@ -51,9 +52,9 @@ public class WebServiceC2 implements WebServiceProcess{
 		}
 		try {
 			st = conn.createStatement();
-			System.out.println("Executing query: " + query);
+			logger.debug("Executing query: " + query);
 			rs = st.executeQuery(query);
-			System.out.println("ResultSet size: " + rs.getFetchSize());
+			logger.info("Query executed Successfuly");
 		} catch (SQLException e) {
 			throw new WebServiceProcessException("Webservice C2, Error while executing query.", e);
 		}
@@ -62,16 +63,16 @@ public class WebServiceC2 implements WebServiceProcess{
 
 	@Override
 	public void parseResultSet() throws WebServiceProcessException {
-		RegisteredCases = new ArrayList<>();
+		filedCases = new ArrayList<>();
 		try {
 			while (rs.next()) {
-				RegisteredCase c = new RegisteredCase();
+				FiledCase c = new FiledCase();
 				c.setCaseType(rs.getString(1));
-				c.setCaseNumber(rs.getString(2));
-				c.setYear(rs.getInt(3));
-				c.setLongCaseNumber(rs.getString(2));
-				c.setRegDate(rs.getString(4));
-				RegisteredCases.add(c);
+				c.setFilingNo(rs.getString(2));
+				c.setFilingYear(rs.getInt(3));
+				c.setLongFilingNum();
+				c.setFilingDate(rs.getString(4));
+				filedCases.add(c);
 			}
 			st.close();
 			conn.close();
@@ -88,7 +89,7 @@ public class WebServiceC2 implements WebServiceProcess{
 		try {
 			writer = factory.createXMLStreamWriter(new FileWriter(xmlOutputFile));
 			writer.writeStartDocument();
-			for (RegisteredCase c : RegisteredCases) {
+			for (FiledCase c : filedCases) {
 				writeCase(writer, c);
 			}
 			writer.writeEndDocument();
@@ -98,15 +99,15 @@ public class WebServiceC2 implements WebServiceProcess{
 			throw new WebServiceProcessException("Error while writing XML to file " + xmlOutputFile.getPath(), e);
 		}
 	}
-	
-	private void writeCase(XMLStreamWriter writer, RegisteredCase c) throws XMLStreamException {
+
+	private void writeCase(XMLStreamWriter writer, FiledCase c) throws XMLStreamException {
 		writer.writeCharacters("\n\t");
 		writer.writeStartElement("CASE");
 		formatCase(writer, "CASE_TYPE", c.getCaseType());
-		formatCase(writer, "CASE_NO", c.getCaseNumber());
-		formatCase(writer, "CASE_YEAR", String.valueOf(c.getYear()));
-		formatCase(writer, "CASENO", c.getLongCaseNumber());
-		formatCase(writer, "REGISTRATION_DATE", c.getRegDate());
+		formatCase(writer, "FILING_NO", c.getFilingNo());
+		formatCase(writer, "FILING_YEAR", String.valueOf(c.getFilingYear()));
+		formatCase(writer, "FILINGNO", c.getLongFilingNum());
+		formatCase(writer, "FILING_DATE", c.getFilingDate());
 		writer.writeCharacters("\n\t");
 		writer.writeEndElement();
 	}
@@ -117,7 +118,7 @@ public class WebServiceC2 implements WebServiceProcess{
 		writer.writeCharacters(data);
 		writer.writeEndElement();
 	}
-	
+
 	private String getXmlFilePath(Configuration appConfig) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(appConfig.getString("path.xml.output"));

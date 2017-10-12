@@ -7,86 +7,95 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
-import org.apache.commons.configuration.Configuration;
-import org.apache.commons.configuration.ConfigurationException;
-
-import ghc.njdg.exeption.ServiceBException;
+import java.util.Date;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
 
-public class WebServiceB {
-	private Configuration appConf;
+import org.apache.commons.configuration.Configuration;
+import org.apache.commons.lang.StringUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+import ghc.njdg.exeption.WebServiceProcessException;
+
+public class WebServiceB implements WebServiceProcess {
 	private Connection conn;
-	private String query;
-	private File xmlFile;
+	private File xmlOutputFile;
 	private Statement st;
 	private ResultSet rs;
-	private ArrayList<Case> cases;
+	private ArrayList<Case> pendingCases;
 
-	//Initialization
-	// data base connectivity
-	public void init(File confFile) throws ServiceBException {
+	private static final Logger logger = LogManager.getLogger(WebServiceB.class);
+
+	@Override
+	public void init(Configuration appConfig) throws WebServiceProcessException {
 		try {
-			appConf = CommonUtil.loadAppConfig(confFile);
-			conn = CommonUtil.getconnection(appConf);
-			query = CommonUtil.getServiceBquery(appConf.getString("path.webservice.query"));
-			xmlFile = new File(appConf.getString("path.xml.output"));
-		} catch (ConfigurationException e) {
-			throw new ServiceBException("Error while loading Application Configuration", e);
+			this.conn = CommonUtil.getconnection(appConfig);
+			this.xmlOutputFile = new File(getXmlFilePath(appConfig));
+			File parentDirectory = this.xmlOutputFile.getParentFile();
+			if (!parentDirectory.exists()) {
+				parentDirectory.mkdirs();
+			}
 		} catch (SQLException e) {
-			throw new ServiceBException("Error while Connecting to database", e);
+			throw new WebServiceProcessException("Webservice B, Error while conecting to Data base", e);
 		}
 	}
 
-	// execute query
-	public void executeQuery() throws ServiceBException {
+	@Override
+	public void executeQuery(String query) throws WebServiceProcessException {
+		if (StringUtils.isBlank(query)) {
+			throw new WebServiceProcessException("Webservice B, Query String is empty.");
+		}
 		try {
 			st = conn.createStatement();
+			logger.debug("Executing query: " + query);
 			rs = st.executeQuery(query);
+			logger.info("Query executed Successfuly");
 		} catch (SQLException e) {
-			throw new ServiceBException("Error while executing query.", e);
+			throw new WebServiceProcessException("Webservice B, Error while executing query.", e);
 		}
+
 	}
 
-	// parse result
-	// write xml file
-	public void parseResultSet() throws ServiceBException {
-		cases = new ArrayList<>();
+	@Override
+	public void parseResultSet() throws WebServiceProcessException {
+		pendingCases = new ArrayList<>();
 		try {
 			while (rs.next()) {
 				Case c = new Case();
 				c.setType(rs.getString(1));
 				c.setYear(rs.getInt(2));
 				c.setTotalCount(rs.getInt(3));
-				cases.add(c);
+				pendingCases.add(c);
 			}
 			st.close();
 			conn.close();
 		} catch (SQLException e) {
-			throw new ServiceBException("Error while Parsing result set", e);
+			throw new WebServiceProcessException("Webservice B, Error while Parsing result set", e);
 		}
+
 	}
 
-	public void writeXML() throws ServiceBException {
+	@Override
+	public void writeXML() throws WebServiceProcessException {
 		XMLOutputFactory factory = XMLOutputFactory.newInstance();
 		XMLStreamWriter writer;
 		try {
-			writer = factory.createXMLStreamWriter(new FileWriter(xmlFile));
+			writer = factory.createXMLStreamWriter(new FileWriter(xmlOutputFile));
 			writer.writeStartDocument();
-			for (Case c : cases) {
+			for (Case c : pendingCases) {
 				writeCase(writer, c);
 			}
 			writer.writeEndDocument();
 			writer.flush();
 			writer.close();
 		} catch (XMLStreamException | IOException e) {
-			throw new ServiceBException("Error while writing XML to file " + xmlFile.getPath(), e);
+			throw new WebServiceProcessException("Error while writing XML to file " + xmlOutputFile.getPath(), e);
 		}
-
 	}
 
 	private void writeCase(XMLStreamWriter writer, Case c) throws XMLStreamException {
@@ -107,5 +116,14 @@ public class WebServiceB {
 		writer.writeStartElement(tag);
 		writer.writeCharacters(data);
 		writer.writeEndElement();
+	}
+
+	private String getXmlFilePath(Configuration appConfig) {
+		StringBuilder builder = new StringBuilder();
+		builder.append(appConfig.getString("path.xml.output"));
+		builder.append("\\ServiceB");
+		builder.append("\\service_B_");
+		builder.append(new SimpleDateFormat("dd-MM-yyyy").format(new Date()) + ".xml");
+		return builder.toString();
 	}
 }
