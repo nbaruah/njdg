@@ -121,10 +121,10 @@ public class WebServiceC2 implements WebServiceProcess {
 
 	private String getXmlFilePath(Configuration appConfig) {
 		StringBuilder builder = new StringBuilder();
-		builder.append(appConfig.getString("path.xml.output"));
-		builder.append("\\ServiceC2");
-		builder.append("\\service_C2_");
-		builder.append(new SimpleDateFormat("dd-MM-yyyy").format(new Date()) + ".xml");
+		builder.append(appConfig.getString(Constants.PATH_XML_OUTPUT));
+		builder.append(Constants.PATH_SEPARATOR + "ServiceC2");
+		builder.append(Constants.PATH_SEPARATOR + "service_C2_");
+		builder.append(new SimpleDateFormat(Constants.XML_PATH_DATE_SUFFIX).format(new Date()) + ".xml");
 		return builder.toString();
 	}
 

@@ -8,8 +8,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.Map;
 
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -20,16 +20,22 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import ghc.njdg.enums.LastMonthFiled;
+import ghc.njdg.enums.ListedToday;
+import ghc.njdg.enums.PendingForReg;
+import ghc.njdg.enums.UnderObjection;
+import ghc.njdg.enums.UnderRejection;
 import ghc.njdg.exeption.WebServiceProcessException;
 
-public class WebServiceC1 implements WebServiceProcess {
+public class WebServiceA implements WebServiceProcess{
+	
 	private Connection conn;
 	private File xmlOutputFile;
 	private Statement st;
 	private ResultSet rs;
-	private ArrayList<RegisteredCase> registeredCases;
+	private DashBoard dashboard;
 
-	private static final Logger logger = LogManager.getLogger(WebServiceC1.class);
+	private static final Logger logger = LogManager.getLogger(WebServiceA.class);
 
 	@Override
 	public void init(Configuration appConfig) throws WebServiceProcessException {
@@ -41,43 +47,43 @@ public class WebServiceC1 implements WebServiceProcess {
 				parentDirectory.mkdirs();
 			}
 		} catch (SQLException e) {
-			throw new WebServiceProcessException("Webservice C1, Error while conecting to Data base", e);
+			throw new WebServiceProcessException("Webservice A, Error while conecting to Database", e);
 		}
 	}
 
 	@Override
 	public void executeQuery(String query) throws WebServiceProcessException {
 		if (StringUtils.isBlank(query)) {
-			throw new WebServiceProcessException("Webservice C1, Query String is empty.");
+			throw new WebServiceProcessException("Webservice A, Query String is empty.");
 		}
 		try {
 			st = conn.createStatement();
-			System.out.println("Executing query: " + query);
+			logger.debug("Executing query: " + query);
 			rs = st.executeQuery(query);
-			System.out.println("ResultSet size: " + rs.getFetchSize());
+			logger.info("Query executed Successfuly");
 		} catch (SQLException e) {
-			throw new WebServiceProcessException("Webservice C1, Error while executing query.", e);
+			throw new WebServiceProcessException("Webservice A, Error while executing query.", e);
 		}
 
 	}
 
 	@Override
 	public void parseResultSet() throws WebServiceProcessException {
-		registeredCases = new ArrayList<>();
+		dashboard = new DashBoard();
 		try {
-			while (rs.next()) {
-				RegisteredCase c = new RegisteredCase();
-				c.setCaseType(rs.getString(1));
-				c.setCaseNumber(rs.getString(2));
-				c.setYear(rs.getInt(3));
-				c.setLongCaseNumber(rs.getString(2));
-				c.setRegDate(rs.getString(4));
-				registeredCases.add(c);
-			}
+			rs.next();
+			dashboard.setLastMonthFiledCases(rs.getInt(1), rs.getInt(2), rs.getInt(3)); 
+			rs.next();
+			dashboard.setUnderObjectionCases(rs.getInt(1), rs.getInt(2), rs.getInt(3));
+			dashboard.setUnderRejectionCases(0, 0, 0);
+			rs.next();
+			dashboard.setPendingForReg(rs.getInt(1), rs.getInt(2), rs.getInt(3));
+			rs.next();
+			dashboard.setTodayListedCases(rs.getInt(1), rs.getInt(2), rs.getInt(3));
 			st.close();
 			conn.close();
 		} catch (SQLException e) {
-			throw new WebServiceProcessException("Webservice C1, Error while Parsing result set", e);
+			throw new WebServiceProcessException("Webservice A, Error while Parsing result set", e);
 		}
 
 	}
@@ -89,9 +95,11 @@ public class WebServiceC1 implements WebServiceProcess {
 		try {
 			writer = factory.createXMLStreamWriter(new FileWriter(xmlOutputFile));
 			writer.writeStartDocument();
-			for (RegisteredCase c : registeredCases) {
-				writeCase(writer, c);
-			}
+			writeMap(writer, dashboard.getLastMonthFiledCases(), LastMonthFiled.PARENT_TAG.getXMLTag());
+			writeMap(writer, dashboard.getUnderObjectionCases(), UnderObjection.PARENT_TAG.getXMLTag());
+			writeMap(writer, dashboard.getUnderRejectionCases(), UnderRejection.PARENT_TAG.getXMLTag());
+			writeMap(writer, dashboard.getPendingForReg(), PendingForReg.PARENT_TAG.getXMLTag());
+			writeMap(writer, dashboard.getTodayListedCases(), ListedToday.PARENT_TAG.getXMLTag());
 			writer.writeEndDocument();
 			writer.flush();
 			writer.close();
@@ -100,32 +108,25 @@ public class WebServiceC1 implements WebServiceProcess {
 		}
 	}
 
-	private void writeCase(XMLStreamWriter writer, RegisteredCase c) throws XMLStreamException {
+	private void writeMap(XMLStreamWriter writer, Map<String, Integer> map, String parentTag) throws XMLStreamException {
 		writer.writeCharacters("\n\t");
-		writer.writeStartElement("CASE");
-		formatCase(writer, "CASE_TYPE", c.getCaseType());
-		formatCase(writer, "CASE_NO", c.getCaseNumber());
-		formatCase(writer, "CASE_YEAR", String.valueOf(c.getYear()));
-		formatCase(writer, "CASENO", c.getLongCaseNumber());
-		formatCase(writer, "REGISTRATION_DATE", c.getRegDate());
+		writer.writeStartElement(parentTag);
+		for (Map.Entry<String, Integer> element : map.entrySet()) {
+			writer.writeCharacters("\n\t\t");
+			writer.writeStartElement(element.getKey());
+			writer.writeCharacters(element.getValue().toString());
+			writer.writeEndElement();
+		}
 		writer.writeCharacters("\n\t");
-		writer.writeEndElement();
-	}
-
-	private void formatCase(XMLStreamWriter writer, String tag, String data) throws XMLStreamException {
-		writer.writeCharacters("\n\t\t");
-		writer.writeStartElement(tag);
-		writer.writeCharacters(data);
 		writer.writeEndElement();
 	}
 
 	private String getXmlFilePath(Configuration appConfig) {
 		StringBuilder builder = new StringBuilder();
 		builder.append(appConfig.getString(Constants.PATH_XML_OUTPUT));
-		builder.append(Constants.PATH_SEPARATOR + "ServiceC1");
-		builder.append(Constants.PATH_SEPARATOR + "service_C1_");
+		builder.append(Constants.PATH_SEPARATOR + "ServiceA");
+		builder.append(Constants.PATH_SEPARATOR + "service_A_");
 		builder.append(new SimpleDateFormat(Constants.XML_PATH_DATE_SUFFIX).format(new Date()) + ".xml");
 		return builder.toString();
 	}
-
 }

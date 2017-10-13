@@ -1,12 +1,7 @@
 package ghc.njdg;
 
-import java.io.FileWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import javax.xml.stream.XMLOutputFactory;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
-
 import ghc.njdg.enums.LastMonthFiled;
 import ghc.njdg.enums.ListedToday;
 import ghc.njdg.enums.PendingForReg;
@@ -92,36 +87,4 @@ public class DashBoard {
 		this.todayListedCases.put(ListedToday.TOTAL.getXMLTag(), civil + criminal + writ);
 	}
 	
-	public void writeXML() {
-		XMLOutputFactory factory = XMLOutputFactory.newInstance();
-		try {
-			XMLStreamWriter writer = factory.createXMLStreamWriter(new FileWriter("D:\\migrations\\njdg_webservice\\njdg\\src\\dashboard.xml"));
-			writer.writeStartDocument();
-			writeMap(writer, lastMonthFiledCases, LastMonthFiled.PARENT_TAG.getXMLTag());
-			writeMap(writer, underObjectionCases, UnderObjection.PARENT_TAG.getXMLTag());
-			writeMap(writer, underRejectionCases, UnderRejection.PARENT_TAG.getXMLTag());
-			writeMap(writer, pendingForReg, PendingForReg.PARENT_TAG.getXMLTag());
-			writeMap(writer, todayListedCases, ListedToday.PARENT_TAG.getXMLTag());
-			writer.writeEndDocument();
-			writer.flush();
-			writer.close();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-	}
-	
-	private void writeMap(XMLStreamWriter writer, Map<String, Integer> map, String parentTag) throws XMLStreamException {
-		writer.writeCharacters("\n\t");
-		writer.writeStartElement(parentTag);
-		for (Map.Entry<String, Integer> element : map.entrySet()) {
-			writer.writeCharacters("\n\t\t");
-			writer.writeStartElement(element.getKey());
-			writer.writeCharacters(element.getValue().toString());
-			writer.writeEndElement();
-		}
-		writer.writeCharacters("\n\t");
-		writer.writeEndElement();
-	}
-
 }

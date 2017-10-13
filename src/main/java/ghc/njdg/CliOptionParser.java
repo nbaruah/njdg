@@ -20,7 +20,7 @@ public class CliOptionParser {
 
 	private static final Options cliOptions;
 
-	private static final Logger LOG = LogManager.getLogger(CliOptionParser.class);
+	private static final Logger logger = LogManager.getLogger(CliOptionParser.class);
 
 	static {
 		cliOptions = constructOptions();
@@ -40,13 +40,13 @@ public class CliOptionParser {
 		cliOptions.setConfFilepath(cmd.getOptionValue(CONF_FILE));
 		cliOptions.setCaseType(cmd.getOptionValue(CASE_TYPE));
 		cliOptions.setCaseYear(cmd.getOptionValue(CASE_YEAR));
-		LOG.error("Parsing cli options" + cliOptions.toString());
+		logger.info("Parsing cli options. " + cliOptions.toString());
 		return cliOptions;
 	}
 
 	private static Options constructOptions() {
 		final Option confFile = Option.builder(CONF_FILE).required().longOpt("conf").hasArg()
-				.desc("Configuration file for the app.").build();
+				.desc("Configuration file for the application.").build();
 		final Option serviceType = Option.builder(SERVICE_TYPE).required().longOpt("service").hasArg()
 				.desc("Type of webservice required").build();
 		final Option case_type = Option.builder(CASE_TYPE).required(false).longOpt("case_type").hasArg()
@@ -107,8 +107,17 @@ public class CliOptionParser {
 
 		@Override
 		public String toString() {
-			return "CliOptions [serviceType=" + serviceType + ", confFilepath=" + confFilepath + ", caseType="
-					+ caseType + ", caseYear=" + caseYear + "]";
+			StringBuilder builder = new StringBuilder();
+			builder.append("CliOptions [serviceType=");
+			builder.append(serviceType);
+			builder.append(", confFilepath=");
+			builder.append(confFilepath);
+			builder.append(", caseType=");
+			builder.append(caseType);
+			builder.append(", caseYear=");
+			builder.append(caseYear);
+			builder.append("]");
+			return builder.toString();
 		}
 
 	}

@@ -28,14 +28,13 @@ public class WebServiceQueryBuilder implements WebServiceQuery{
 			serviceC1Template = queryTemplateConf.getString(Constants.SERVICE_C1_QUERY_KEY);
 			serviceC2Template = queryTemplateConf.getString(Constants.SERVICE_C2_QUERY_KEY);
 		} catch (ConfigurationException e) {
-			throw new QueryBuilderException("Error while loading query template file" + queryTemplateFilePath, e);
+			throw new QueryBuilderException("Error while loading query template file " + queryTemplateFilePath, e);
 		}
 	}
 
 	@Override
 	public String getServiceAQuery() throws QueryBuilderException {
-		// TODO Auto-generated method stub
-		return null;
+		return this.serviceATemplate;
 	}
 
 	@Override

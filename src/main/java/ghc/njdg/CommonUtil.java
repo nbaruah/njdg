@@ -5,9 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Map;
 
 import org.apache.commons.configuration.Configuration;
@@ -60,28 +58,5 @@ public class CommonUtil {
 		Connection conn = DriverManager.getConnection(db_conn_string, db_username, db_password);
 		return conn;
 	}
-	
-	public static void main(String[] args) throws Exception {
-		Connection conn = CommonUtil.getconnection(CommonUtil.loadAppConfig(new File("D:\\migrations\\njdg_webservice\\njdg\\src\\config.properties")));
-		Statement statement = conn.createStatement();
-		String queryString = "SELECT [DistrictID],[StateID],[District] FROM [HighNIC].[Admin].[tDistricts]";
-		ResultSet rs = statement.executeQuery(queryString);
-		while (rs.next()) {
-			System.out.println(rs.getString("DistrictID") + "\t" + rs.getString("StateID") + "\t" + rs.getString("District"));
-		}
-	}
-	
-	public static String getServiceBquery(String queryTemplateFilePath) throws ConfigurationException {
-		PropertiesConfiguration queryTemplateConf = new PropertiesConfiguration();
-        queryTemplateConf.setDelimiterParsingDisabled(true);
-        queryTemplateConf.load(queryTemplateFilePath);
-		return queryTemplateConf.getString("service.b");
-	}
-	
-	public static PropertiesConfiguration loadQueryTemplate(String queryTemplateFilePath) throws ConfigurationException {
-		PropertiesConfiguration queryTemplateConf = new PropertiesConfiguration();
-        queryTemplateConf.setDelimiterParsingDisabled(true);
-        queryTemplateConf.load(queryTemplateFilePath);
-        return queryTemplateConf;
-	}
+		
 }
