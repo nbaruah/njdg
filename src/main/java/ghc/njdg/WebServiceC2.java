@@ -101,19 +101,19 @@ public class WebServiceC2 implements WebServiceProcess {
 	}
 
 	private void writeCase(XMLStreamWriter writer, FiledCase c) throws XMLStreamException {
-		writer.writeCharacters("\n\t");
+		writer.writeCharacters(Constants.NEWLINE_SINGLE_TAB);
 		writer.writeStartElement("CASE");
 		formatCase(writer, "CASE_TYPE", c.getCaseType());
 		formatCase(writer, "FILING_NO", c.getFilingNo());
 		formatCase(writer, "FILING_YEAR", String.valueOf(c.getFilingYear()));
 		formatCase(writer, "FILINGNO", c.getLongFilingNum());
 		formatCase(writer, "FILING_DATE", c.getFilingDate());
-		writer.writeCharacters("\n\t");
+		writer.writeCharacters(Constants.NEWLINE_SINGLE_TAB);
 		writer.writeEndElement();
 	}
 
 	private void formatCase(XMLStreamWriter writer, String tag, String data) throws XMLStreamException {
-		writer.writeCharacters("\n\t\t");
+		writer.writeCharacters(Constants.NEWLINE_DOUBLE_TAB);
 		writer.writeStartElement(tag);
 		writer.writeCharacters(data);
 		writer.writeEndElement();

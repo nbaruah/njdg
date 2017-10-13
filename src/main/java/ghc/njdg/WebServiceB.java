@@ -99,7 +99,7 @@ public class WebServiceB implements WebServiceProcess {
 	}
 
 	private void writeCase(XMLStreamWriter writer, Case c) throws XMLStreamException {
-		writer.writeCharacters("\n\t");
+		writer.writeCharacters(Constants.NEWLINE_SINGLE_TAB);
 		writer.writeStartElement("CASE");
 		formatCase(writer, "CASE_TYPE", c.getType());
 		formatCase(writer, "CASE_YEAR", String.valueOf(c.getYear()));
@@ -107,12 +107,12 @@ public class WebServiceB implements WebServiceProcess {
 		formatCase(writer, "SENIORCOUNT", String.valueOf(c.getSeniorCount()));
 		formatCase(writer, "WOMEN_COUNT", String.valueOf(c.getWomenCount()));
 		formatCase(writer, "DISPOSAL_LAST_MONTH", String.valueOf(c.getLastMonthDisposal()));
-		writer.writeCharacters("\n\t");
+		writer.writeCharacters(Constants.NEWLINE_SINGLE_TAB);
 		writer.writeEndElement();
 	}
 
 	private void formatCase(XMLStreamWriter writer, String tag, String data) throws XMLStreamException {
-		writer.writeCharacters("\n\t\t");
+		writer.writeCharacters(Constants.NEWLINE_DOUBLE_TAB);
 		writer.writeStartElement(tag);
 		writer.writeCharacters(data);
 		writer.writeEndElement();

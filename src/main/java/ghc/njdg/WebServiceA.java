@@ -23,6 +23,7 @@ import org.apache.logging.log4j.Logger;
 import ghc.njdg.enums.LastMonthFiled;
 import ghc.njdg.enums.ListedToday;
 import ghc.njdg.enums.PendingForReg;
+import ghc.njdg.enums.TotalJudges;
 import ghc.njdg.enums.UnderObjection;
 import ghc.njdg.enums.UnderRejection;
 import ghc.njdg.exeption.WebServiceProcessException;
@@ -99,6 +100,7 @@ public class WebServiceA implements WebServiceProcess{
 			writeMap(writer, dashboard.getUnderObjectionCases(), UnderObjection.PARENT_TAG.getXMLTag());
 			writeMap(writer, dashboard.getUnderRejectionCases(), UnderRejection.PARENT_TAG.getXMLTag());
 			writeMap(writer, dashboard.getPendingForReg(), PendingForReg.PARENT_TAG.getXMLTag());
+			writeTotalJudges(writer);
 			writeMap(writer, dashboard.getTodayListedCases(), ListedToday.PARENT_TAG.getXMLTag());
 			writer.writeEndDocument();
 			writer.flush();
@@ -109,15 +111,26 @@ public class WebServiceA implements WebServiceProcess{
 	}
 
 	private void writeMap(XMLStreamWriter writer, Map<String, Integer> map, String parentTag) throws XMLStreamException {
-		writer.writeCharacters("\n\t");
+		writer.writeCharacters(Constants.NEWLINE_SINGLE_TAB);
 		writer.writeStartElement(parentTag);
 		for (Map.Entry<String, Integer> element : map.entrySet()) {
-			writer.writeCharacters("\n\t\t");
+			writer.writeCharacters(Constants.NEWLINE_DOUBLE_TAB);
 			writer.writeStartElement(element.getKey());
 			writer.writeCharacters(element.getValue().toString());
 			writer.writeEndElement();
 		}
-		writer.writeCharacters("\n\t");
+		writer.writeCharacters(Constants.NEWLINE_SINGLE_TAB);
+		writer.writeEndElement();
+	}
+	
+	private void writeTotalJudges(XMLStreamWriter writer) throws XMLStreamException {
+		writer.writeCharacters(Constants.NEWLINE_SINGLE_TAB);
+		writer.writeStartElement(TotalJudges.PARENT_TAG.getXMLTag());
+		writer.writeCharacters(Constants.NEWLINE_DOUBLE_TAB);
+		writer.writeStartElement(TotalJudges.TOTAL.getXMLTag());
+		writer.writeCharacters(Integer.toString(dashboard.getTotalJudges()));
+		writer.writeEndElement();
+		writer.writeCharacters(Constants.NEWLINE_SINGLE_TAB);
 		writer.writeEndElement();
 	}
 
