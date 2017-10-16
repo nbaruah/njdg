@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.core;
 
 public class FiledCase {
 	private String caseType;

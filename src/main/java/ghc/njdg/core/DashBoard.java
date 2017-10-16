@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.core;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

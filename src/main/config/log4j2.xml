@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="INFO">
+    <Properties>
+        <Property name="basePath">${sys:log.dir}</Property>
+    </Properties>
+
+    <Appenders>
+        <RollingFile name="fileLogger" fileName="${basePath}/njdg-app-info.log" filePattern="${basePath}/njdg-app-%d{dd-MM-yyyy}.log">
+            <PatternLayout>
+                <pattern>[%t] %d{dd-MM-yyyy hh:mm:ss a} %c:[%t] %-5p - %m%n</pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy interval="1" modulate="true" />
+            </Policies>
+        </RollingFile>
+
+        <Console name="console" target="SYSTEM_OUT">
+            <PatternLayout
+                pattern="[%-5level] %d{dd MMM yyyy HH:mm:ss} %t %p %c:%L - %m%n" />
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Logger name="ghc.njdg" level="debug" additivity="true">
+            <appender-ref ref="fileLogger" level="info" />
+        </Logger>
+        <Root level="debug" additivity="false">
+            <appender-ref ref="console" />
+        </Root>
+    </Loggers>
+</Configuration>

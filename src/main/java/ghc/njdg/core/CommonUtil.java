@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.core;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,7 +12,6 @@ import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.configuration.PropertiesConfiguration;
 import org.apache.commons.lang.text.StrSubstitutor;
-import org.apache.log4j.BasicConfigurator;
 import org.apache.logging.log4j.core.config.ConfigurationSource;
 import org.apache.logging.log4j.core.config.Configurator;
 
@@ -24,9 +23,9 @@ public class CommonUtil {
         if (log4j2ConfigFile != null) {
             ConfigurationSource source = new ConfigurationSource(new FileInputStream(log4j2ConfigFile));
             Configurator.initialize(null, source);
-        } else {
+        }/* else {
         	BasicConfigurator.configure();
-        }
+        }*/
     } 
     
     /**

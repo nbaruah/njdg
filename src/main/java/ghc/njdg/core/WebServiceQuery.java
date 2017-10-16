@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.core;
 
 import org.apache.commons.configuration.Configuration;
 

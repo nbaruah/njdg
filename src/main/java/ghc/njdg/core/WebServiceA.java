@@ -1,4 +1,4 @@
-package ghc.njdg;
+package ghc.njdg.core;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -96,12 +96,14 @@ public class WebServiceA implements WebServiceProcess{
 		try {
 			writer = factory.createXMLStreamWriter(new FileWriter(xmlOutputFile));
 			writer.writeStartDocument();
+			writer.writeStartElement("GHCSERVICEA");
 			writeMap(writer, dashboard.getLastMonthFiledCases(), LastMonthFiled.PARENT_TAG.getXMLTag());
 			writeMap(writer, dashboard.getUnderObjectionCases(), UnderObjection.PARENT_TAG.getXMLTag());
 			writeMap(writer, dashboard.getUnderRejectionCases(), UnderRejection.PARENT_TAG.getXMLTag());
 			writeMap(writer, dashboard.getPendingForReg(), PendingForReg.PARENT_TAG.getXMLTag());
 			writeTotalJudges(writer);
 			writeMap(writer, dashboard.getTodayListedCases(), ListedToday.PARENT_TAG.getXMLTag());
+			writer.writeEndElement();
 			writer.writeEndDocument();
 			writer.flush();
 			writer.close();

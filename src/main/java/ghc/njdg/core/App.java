@@ -1,27 +1,16 @@
-package ghc;
+package ghc.njdg.core;
 
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.IOException;
-
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.logging.log4j.LogManager;
 
-import ghc.njdg.CliOptionParser;
-import ghc.njdg.CliOptionParser.CliOptions;
+import ghc.njdg.core.CliOptionParser.CliOptions;
 import ghc.njdg.enums.ServiceType;
 import ghc.njdg.exeption.QueryBuilderException;
-import ghc.njdg.CommonUtil;
-import ghc.njdg.WebServiceA;
-import ghc.njdg.WebServiceB;
-import ghc.njdg.WebServiceProcess;
-import ghc.njdg.WebServiceQuery;
-import ghc.njdg.WebServiceQueryBuilder;
-import ghc.njdg.WebServiceC1;
-import ghc.njdg.WebServiceC2;
 
 public class App {
 	private static final Logger logger = LogManager.getLogger(App.class);
@@ -33,7 +22,7 @@ public class App {
 				System.exit(-1);
 			}
 
-			CommonUtil.configureLogging();
+			//CommonUtil.configureLogging();
 			CliOptions cliOptions = CliOptionParser.parse(args);
 			File appConfigFile = new File(cliOptions.getConfFilepath());
 			Configuration appConfig = CommonUtil.loadAppConfig(appConfigFile);
@@ -90,9 +79,6 @@ public class App {
 				break;
 			}
 
-		} catch (IOException e) {
-			logger.error("Error while loading Logging configuartion. ", e);
-			System.exit(-1);
 		} catch (ConfigurationException e) {
 			logger.error("Error while loading Application configuration file. ", e);
 			System.exit(-1);
