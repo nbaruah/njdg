@@ -52,9 +52,9 @@ public class WebServiceC1 implements WebServiceProcess {
 		}
 		try {
 			st = conn.createStatement();
-			System.out.println("Executing query: " + query);
+			logger.info("Executing query: " + query);
 			rs = st.executeQuery(query);
-			System.out.println("ResultSet size: " + rs.getFetchSize());
+			logger.info("Query executed Successfuly");
 		} catch (SQLException e) {
 			throw new WebServiceProcessException("Webservice C1, Error while executing query.", e);
 		}
@@ -89,12 +89,15 @@ public class WebServiceC1 implements WebServiceProcess {
 		try {
 			writer = factory.createXMLStreamWriter(new FileWriter(xmlOutputFile));
 			writer.writeStartDocument();
+			writer.writeStartElement(Constants.SERVICE_C1_ROOT_ELEM);
 			for (RegisteredCase c : registeredCases) {
 				writeCase(writer, c);
 			}
+			writer.writeEndElement();
 			writer.writeEndDocument();
 			writer.flush();
 			writer.close();
+			logger.info("Successfuly written to file: " + this.xmlOutputFile.getPath());
 		} catch (XMLStreamException | IOException e) {
 			throw new WebServiceProcessException("Error while writing XML to file " + xmlOutputFile.getPath(), e);
 		}

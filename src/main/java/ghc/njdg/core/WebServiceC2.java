@@ -89,12 +89,15 @@ public class WebServiceC2 implements WebServiceProcess {
 		try {
 			writer = factory.createXMLStreamWriter(new FileWriter(xmlOutputFile));
 			writer.writeStartDocument();
+			writer.writeStartElement(Constants.SERVICE_C2_ROOT_ELEM);
 			for (FiledCase c : filedCases) {
 				writeCase(writer, c);
 			}
+			writer.writeEndElement();
 			writer.writeEndDocument();
 			writer.flush();
 			writer.close();
+			logger.info("Successfuly written to file: " + this.xmlOutputFile.getPath());
 		} catch (XMLStreamException | IOException e) {
 			throw new WebServiceProcessException("Error while writing XML to file " + xmlOutputFile.getPath(), e);
 		}

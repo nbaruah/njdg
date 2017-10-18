@@ -59,9 +59,9 @@ public class WebServiceA implements WebServiceProcess{
 		}
 		try {
 			st = conn.createStatement();
-			logger.debug("Executing query: " + query);
+			logger.info("Executing query: " + query);
 			rs = st.executeQuery(query);
-			logger.info("Query executed Successfuly");
+			logger.info("Query executed Successfuly!!");
 		} catch (SQLException e) {
 			throw new WebServiceProcessException("Webservice A, Error while executing query.", e);
 		}
@@ -96,7 +96,7 @@ public class WebServiceA implements WebServiceProcess{
 		try {
 			writer = factory.createXMLStreamWriter(new FileWriter(xmlOutputFile));
 			writer.writeStartDocument();
-			writer.writeStartElement("GHCSERVICEA");
+			writer.writeStartElement(Constants.SERVICE_A_ROOT_ELEM);
 			writeMap(writer, dashboard.getLastMonthFiledCases(), LastMonthFiled.PARENT_TAG.getXMLTag());
 			writeMap(writer, dashboard.getUnderObjectionCases(), UnderObjection.PARENT_TAG.getXMLTag());
 			writeMap(writer, dashboard.getUnderRejectionCases(), UnderRejection.PARENT_TAG.getXMLTag());
@@ -107,6 +107,7 @@ public class WebServiceA implements WebServiceProcess{
 			writer.writeEndDocument();
 			writer.flush();
 			writer.close();
+			logger.info("Successfuly written to file: " + this.xmlOutputFile.getPath());
 		} catch (XMLStreamException | IOException e) {
 			throw new WebServiceProcessException("Error while writing XML to file " + xmlOutputFile.getPath(), e);
 		}

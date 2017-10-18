@@ -18,4 +18,9 @@ public class Constants {
 	
 	public static final String NEWLINE_SINGLE_TAB = "\n\t";
 	public static final String NEWLINE_DOUBLE_TAB = "\n\t\t";
+	
+	public static final String SERVICE_A_ROOT_ELEM = "GHC_SERVICEA";
+	public static final String SERVICE_B_ROOT_ELEM = "GHC_SERVICEB";
+	public static final String SERVICE_C1_ROOT_ELEM = "GHC_SERVICEC1";
+	public static final String SERVICE_C2_ROOT_ELEM = "GHC_SERVICEC2";
 }

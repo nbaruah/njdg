@@ -51,11 +51,3 @@ APP_OPTS="-Dlog4j.configurationFile=$CONFIG_DIR/log4j2.xml -Dlog.dir=$LOG_DIR"
 APP_CONFIG="-c $CONFIG_DIR/config.properties"
 
 java $APP_OPTS -cp $APP_CLASSPATH $MAIN_CLASS $APP_CONFIG $@
-
-if [ $? -eq 0 ]
-then
-  echo "[INFO] successfull."
-else
-  echo "[ERROR] exited with -1"
-  exit 1
-fi

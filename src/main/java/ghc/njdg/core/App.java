@@ -3,6 +3,8 @@ package ghc.njdg.core;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
+import java.util.Arrays;
+
 import org.apache.commons.configuration.Configuration;
 import org.apache.commons.configuration.ConfigurationException;
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +18,7 @@ public class App {
 	private static final Logger logger = LogManager.getLogger(App.class);
 
 	public static void main(String[] args) {
+		logger.info(Arrays.toString(args));
 		try {
 			if (args.length < 2) {
 				CliOptionParser.printHelp();
