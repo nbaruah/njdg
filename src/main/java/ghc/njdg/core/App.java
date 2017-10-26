@@ -58,7 +58,9 @@ public class App {
 				break;
 
 			case C1:
-				String caseType = cliOptions.getCaseType();
+				//Hot fix for space issue
+				String caseType = StringUtils.contains(cliOptions.getCaseType(), "Bail")?"Bail Appln.":cliOptions.getCaseType();
+				//String caseType = cliOptions.getCaseType();
 				String caseYear = cliOptions.getCaseYear();
 				validateServiceCargs(caseType, caseYear);
 				String query = queryBuilder.getServiceC1Query(caseType, caseYear);
@@ -70,7 +72,9 @@ public class App {
 				break;
 
 			case C2:
-				String c2CaseType = cliOptions.getCaseType();
+				//Hot fix for space issue
+				String c2CaseType = StringUtils.contains(cliOptions.getCaseType(), "Bail")?"Bail Appln.":cliOptions.getCaseType();
+				//String c2CaseType = cliOptions.getCaseType();
 				String c2CaseYear = cliOptions.getCaseYear();
 				validateServiceCargs(c2CaseType, c2CaseYear);
 				String c2Query = queryBuilder.getServiceC2Query(c2CaseType, c2CaseYear);

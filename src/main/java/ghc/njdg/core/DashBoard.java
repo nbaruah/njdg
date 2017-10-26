@@ -32,7 +32,7 @@ public class DashBoard {
     	this.lastMonthFiledCases.put(LastMonthFiled.CIVIL.getXMLTag(), civil);
     	this.lastMonthFiledCases.put(LastMonthFiled.CRIMINAL.getXMLTag(), criminal);
     	this.lastMonthFiledCases.put(LastMonthFiled.WRIT.getXMLTag(), writ);
-    	this.lastMonthFiledCases.put(LastMonthFiled.TOTAL.getXMLTag(), civil + criminal + writ);
+    	this.lastMonthFiledCases.put(LastMonthFiled.TOTAL.getXMLTag(), civil + criminal);
 	}
 
 	public Map<String, Integer> getUnderObjectionCases() {
@@ -43,7 +43,7 @@ public class DashBoard {
 		this.underObjectionCases.put(UnderObjection.CIVIL.getXMLTag(), civil);
 		this.underObjectionCases.put(UnderObjection.CRIMINAL.getXMLTag(), criminal);
 		this.underObjectionCases.put(UnderObjection.WRIT.getXMLTag(), writ);
-		this.underObjectionCases.put(UnderObjection.TOTAL.getXMLTag(), civil + criminal + writ);
+		this.underObjectionCases.put(UnderObjection.TOTAL.getXMLTag(), civil + criminal);
 	}
 
 	public Map<String, Integer> getUnderRejectionCases() {
@@ -54,7 +54,7 @@ public class DashBoard {
 		this.underRejectionCases.put(UnderRejection.CIVIL.getXMLTag(), civil);
 		this.underRejectionCases.put(UnderRejection.CRIMINAL.getXMLTag(), criminal);
 		this.underRejectionCases.put(UnderRejection.WRIT.getXMLTag(), writ);
-		this.underRejectionCases.put(UnderRejection.TOTAL.getXMLTag(), civil + criminal + writ);
+		this.underRejectionCases.put(UnderRejection.TOTAL.getXMLTag(), civil + criminal);
 	}
 
 	public Map<String, Integer> getPendingForReg() {
@@ -65,7 +65,7 @@ public class DashBoard {
 		this.pendingForReg.put(PendingForReg.CIVIL.getXMLTag(), civil);
 		this.pendingForReg.put(PendingForReg.CRIMINAL.getXMLTag(), criminal);
 		this.pendingForReg.put(PendingForReg.WRIT.getXMLTag(), writ);
-		this.pendingForReg.put(PendingForReg.TOTAL.getXMLTag(), civil + criminal + writ);
+		this.pendingForReg.put(PendingForReg.TOTAL.getXMLTag(), civil + criminal);
 	}
 
 	public int getTotalJudges() {
@@ -84,7 +84,7 @@ public class DashBoard {
 		this.todayListedCases.put(ListedToday.CIVIL.getXMLTag(), civil);
 		this.todayListedCases.put(ListedToday.CRIMINAL.getXMLTag(), criminal);
 		this.todayListedCases.put(ListedToday.WRIT.getXMLTag(), writ);
-		this.todayListedCases.put(ListedToday.TOTAL.getXMLTag(), civil + criminal + writ);
+		this.todayListedCases.put(ListedToday.TOTAL.getXMLTag(), civil + criminal);
 	}
 	
 }

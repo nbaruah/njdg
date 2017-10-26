@@ -52,7 +52,7 @@ public class WebServiceC2 implements WebServiceProcess {
 		}
 		try {
 			st = conn.createStatement();
-			logger.debug("Executing query: " + query);
+			logger.info("Executing query: " + query);
 			rs = st.executeQuery(query);
 			logger.info("Query executed Successfuly");
 		} catch (SQLException e) {

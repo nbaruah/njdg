@@ -16,8 +16,11 @@ public class Constants {
 	public static final String TEMPLATE_CASE_TYPE = "case_type";
 	public static final String TEMPLATE_CASE_YEAR = "case_year";
 	
-	public static final String NEWLINE_SINGLE_TAB = "\n\t";
-	public static final String NEWLINE_DOUBLE_TAB = "\n\t\t";
+	public static final String NEWLINE_SINGLE_TAB = "";
+	public static final String NEWLINE_DOUBLE_TAB = "";
+	
+/*	public static final String NEWLINE_SINGLE_TAB = "\n\t";
+	public static final String NEWLINE_DOUBLE_TAB = "\n\t\t";*/
 	
 	public static final String SERVICE_A_ROOT_ELEM = "GHC_SERVICEA";
 	public static final String SERVICE_B_ROOT_ELEM = "GHC_SERVICEB";

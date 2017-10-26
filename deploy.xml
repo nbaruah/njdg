@@ -21,6 +21,9 @@
             <fileMode>0755</fileMode>
             <directoryMode>0755</directoryMode>
             <lineEnding>unix</lineEnding>
+            <includes>
+				<include>*.sh</include>
+			</includes>
         </fileSet>
         
         <!-- config dir -->
